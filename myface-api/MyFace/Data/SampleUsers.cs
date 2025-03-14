@@ -124,15 +124,15 @@ namespace MyFace.Data
         private static User CreateRandomUser(int index)
         {
             byte [] salt = PasswordHelper.GenerateSalt();
-            string hashpassword = PasswordHelper.Hashpassword(salt,"Password123");
+            string hashPassword = PasswordHelper.HashPassword(salt,"Password123");
 
             return new User
             {
                 FirstName = Data[index][0],
                 LastName = Data[index][1],
-                Username = Data[index][2],
+                UserName = Data[index][2],
                 Email = Data[index][3],
-                Hashed_password = hashpassword,
+                HashedPassword = hashPassword,
                 Salt = Convert.ToBase64String(salt),
                 ProfileImageUrl = ImageGenerator.GetProfileImage(Data[index][2]),
                 CoverImageUrl = ImageGenerator.GetCoverImage(index),

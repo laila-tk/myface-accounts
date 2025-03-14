@@ -11,7 +11,7 @@ namespace MyFace.Helpers
             byte[] salt = System.Security.Cryptography.RandomNumberGenerator.GetBytes(128 / 8);
             return salt;
         }
-        public static string Hashpassword(byte[] salt, string password)
+        public static string HashPassword(byte[] salt, string password)
         {
             return Convert.ToBase64String(KeyDerivation.Pbkdf2(
             password: password,
@@ -20,11 +20,5 @@ namespace MyFace.Helpers
             iterationCount: 100000,
             numBytesRequested: 256 / 8));
         }
-
     }
-
 }
-
-
-
-
