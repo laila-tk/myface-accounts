@@ -2,6 +2,8 @@
 using System.Linq;
 using MyFace.Models.Database;
 using MyFace.Models.Request;
+using MyFace.Helpers;
+using System;
 
 namespace MyFace.Repositories
 {
@@ -32,9 +34,9 @@ namespace MyFace.Repositories
                                 p.FirstName.ToLower().Contains(search.Search) ||
                                 p.LastName.ToLower().Contains(search.Search) ||
                                 p.Email.ToLower().Contains(search.Search) ||
-                                p.Username.ToLower().Contains(search.Search)
+                                p.UserName.ToLower().Contains(search.Search)
                             ))
-                .OrderBy(u => u.Username)
+                .OrderBy(u => u.UserName)
                 .Skip((search.Page - 1) * search.PageSize)
                 .Take(search.PageSize);
         }
@@ -47,7 +49,7 @@ namespace MyFace.Repositories
                                 p.FirstName.ToLower().Contains(search.Search) ||
                                 p.LastName.ToLower().Contains(search.Search) ||
                                 p.Email.ToLower().Contains(search.Search) ||
-                                p.Username.ToLower().Contains(search.Search)
+                                p.UserName.ToLower().Contains(search.Search)
                             ));
         }
 
@@ -58,13 +60,18 @@ namespace MyFace.Repositories
         }
 
         public User Create(CreateUserRequest newUser)
-        {
+        {   
+            byte [] salt = PasswordHelper.GenerateSalt();
+            string hashPassword = PasswordHelper.HashPassword(salt,newUser.Password);
+
             var insertResponse = _context.Users.Add(new User
-            {
+            {   
                 FirstName = newUser.FirstName,
                 LastName = newUser.LastName,
                 Email = newUser.Email,
-                Username = newUser.Username,
+                UserName = newUser.Username,
+                HashedPassword = hashPassword,
+                Salt = Convert.ToBase64String(salt),
                 ProfileImageUrl = newUser.ProfileImageUrl,
                 CoverImageUrl = newUser.CoverImageUrl,
             });
@@ -79,7 +86,7 @@ namespace MyFace.Repositories
 
             user.FirstName = update.FirstName;
             user.LastName = update.LastName;
-            user.Username = update.Username;
+            user.UserName = update.Username;
             user.Email = update.Email;
             user.ProfileImageUrl = update.ProfileImageUrl;
             user.CoverImageUrl = update.CoverImageUrl;
