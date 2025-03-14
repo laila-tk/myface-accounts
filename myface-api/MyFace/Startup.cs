@@ -33,7 +33,7 @@ namespace MyFace
             {
                 options.AddPolicy(CORS_POLICY_NAME, builder =>
                     builder
-                        .WithOrigins("http://localhost:3003")
+                        .WithOrigins("http://localhost:3000")
                         .AllowAnyMethod()
                         .AllowAnyHeader());
             });

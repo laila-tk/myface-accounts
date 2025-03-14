@@ -4,6 +4,7 @@ using MyFace.Models.Database;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System.Security.Cryptography;
 using System;
+using MyFace.Helpers;
 
 namespace MyFace.Data
 {
@@ -122,28 +123,22 @@ namespace MyFace.Data
 
         private static User CreateRandomUser(int index)
         {
-           byte[] salt = System.Security.Cryptography.RandomNumberGenerator.GetBytes(128 / 8);
+            byte [] salt = PasswordHelper.GenerateSalt();
+            string hashpassword = PasswordHelper.Hashpassword(salt,"Password123");
 
-           return new User
+            return new User
             {
                 FirstName = Data[index][0],
                 LastName = Data[index][1],
                 Username = Data[index][2],
                 Email = Data[index][3],
-                Hashed_password = Hashpassword(salt),
+                Hashed_password = hashpassword,
                 Salt = Convert.ToBase64String(salt),
                 ProfileImageUrl = ImageGenerator.GetProfileImage(Data[index][2]),
                 CoverImageUrl = ImageGenerator.GetCoverImage(index),
             };
         }
 
-        private static string Hashpassword(byte [] salt)
-        {   return Convert.ToBase64String(KeyDerivation.Pbkdf2(
-            password: "password123",
-            salt: salt,
-            prf: KeyDerivationPrf.HMACSHA256,
-            iterationCount: 100000,
-            numBytesRequested: 256 / 8));
-        }
+
     }
 }
